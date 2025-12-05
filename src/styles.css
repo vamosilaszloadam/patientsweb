@@ -1,1 +1,118 @@
+/*
+* File: styles.css
+* Author: Vámosi László Ádám
+* Copyright: 2025, Vámosi László Ádám
+* Group: Szoft II-N
+* Date: 2025-12-05
+* GitHub: https://github.com/vamosilaszloadam/
+* Licenc: MIT
+*/
+
 /* You can add global styles to this file, and also import other style files */
+
+@import 'bootstrap';
+@import 'bootstrap-icons';
+
+html {
+    min-width: 360px;
+    user-select: none;
+}
+
+nav {
+    font-size: 2dvw;
+}
+
+nav.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+nav .spinner-border {
+    width: 2dvw;
+    height: 2dvw;
+}
+
+.table, .table .btn {
+    font-size: 1dvw;
+}
+
+th, td{
+    white-space: nowrap;
+}
+
+h1, p {
+    text-align: center;
+}
+
+@media screen and (max-width: 992px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+        font-size: 1rem;
+    }
+    
+    thead tr {
+        display: none;
+    }
+    
+    tbody tr {
+        margin-bottom: 8px;
+    }
+
+    td:before {
+        content: attr(data-column);
+        font-weight: bold;
+        padding-right: 10px;
+        width: 40%;
+    }
+
+    td {
+        text-align: center;
+    }
+
+    .table .btn {
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    nav {
+        font-size: 7.2px;
+    }
+}
+
+.nav-link:hover {
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.25);
+}
+
+.nav-link {
+    background-color: #eff;
+    border: 1px solid lightblue;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 0 0 .25rem rgba(13,110,253,.4);
+}
+
+.btn-secondary:hover {
+    box-shadow: 0 0 0 .25rem rgba(108,117,125,.45);
+}
+
+.btn-warning:hover {
+    box-shadow: 0 0 0 .25rem rgba(255,193,7,.5);
+}
+
+.btn-danger:hover {
+    box-shadow: 0 0 0 .25rem rgba(220,53,69,.4);
+}
+
+.btn-success:hover {
+    box-shadow: 0 0 0 .25rem rgba(25,135,84,.45);
+}
+
+.btn:active, .nav-link:active {
+    filter: brightness(0.85);
+}
+
+body, .container, .container-fluid {
+    background-color: #dff;
+}

@@ -1,0 +1,133 @@
+<!--
+* File: visit.component.html
+* Author: Vámosi László Ádám
+* Copyright: 2025, Vámosi László Ádám
+* Group: Szoft II-N
+* Date: 2025-12-05
+* GitHub: https://github.com/vamosilaszloadam/
+* Licenc: MIT
+-->
+
+<h1>Látogatások</h1>
+
+@if(isGetVisitsSuccessful) {
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-success mb-2 d-block mx-auto" (click)="setShowModal()">
+        <i class="bi bi-calendar-plus"></i>
+        Hozzáadás
+    </button>
+
+    @if(visits.length > 0) {
+        <table class="table table-info table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Dátum</th>
+                    <th>Diagnózis</th>
+                    <th>Orvos</th>
+                    <th>Páciens Id</th>
+                    <th>Létrehozva</th>
+                    <th>Módosítva</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (visit of visits; track visit.id) {
+                    <tr class="align-middle">
+                        <td data-column="Id:">{{visit.id}}</td>
+                        <td data-column="Dátum:">{{visit.date}}</td>
+                        <td data-column="Diagnózis:">{{visit.diagnosis}}</td>
+                        <td data-column="Orvos:">{{visit.doctor}}</td>
+                        <td data-column="Páciens Id:">{{visit.patientId}}</td>
+                        <td data-column="Létrehozva:">{{visit.createdAt}}</td>
+                        <td data-column="Módosítva:">{{visit.updatedAt}}</td>
+                        <td class="text-center">
+                            <button class="btn btn-warning" (click)="editVisit(visit)">
+                                <i class="bi bi-pencil"></i>
+                                Módosítás
+                            </button>
+                            <button class="btn btn-danger ms-2" (click)="startDeleteVisit(visit.id)">
+                                <i class="bi bi-trash"></i>
+                                Törlés
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }@else {
+        <div class="alert alert-info text-center" role="alert">Jelenleg nincs rögzített látogatás.</div>
+    }
+}
+
+@if(showModal) {
+    <!-- Modal -->
+    <div class="modal fade show" id="operationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        @if(addMode) {
+                            Látogatás hozzáadása
+                        }@else {
+                            Látogatás módosítása
+                        }
+                    </h1>
+                    <button type="button" class="btn-close" (click)="cancel()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="visitForm" (ngSubmit)="saveVisit()" id="visitForm">
+                        @if(!addMode) {
+                            <div class="mb-2">
+                                <label for="id" class="form-label">Id</label>
+                                <input type="text" id="id" formControlName="id" class="form-control is-valid" readonly>
+                            </div>
+                        }
+                        <div class="mb-2">
+                            <label for="date" class="form-label">Dátum</label>
+                            <input type="date" id="date" formControlName="date" class="form-control" 
+                                [class.is-invalid]="visitForm.get('date')?.invalid && visitForm.get('date')?.touched" 
+                                [class.is-valid]="visitForm.get('date')?.valid"
+                            >
+                        </div>
+                        <div class="mb-2">
+                            <label for="diagnosis" class="form-label">Diagnózis</label>
+                            <input type="text" id="diagnosis" formControlName="diagnosis" class="form-control" maxlength="50" 
+                                [class.is-invalid]="visitForm.get('diagnosis')?.invalid && visitForm.get('diagnosis')?.touched" 
+                                [class.is-valid]="visitForm.get('diagnosis')?.valid"
+                            >
+                        </div>
+                        <div class="mb-2">
+                            <label for="doctor" class="form-label">Orvos</label>
+                            <input type="text" id="doctor" formControlName="doctor" class="form-control" maxlength="50" 
+                                [class.is-invalid]="visitForm.get('doctor')?.invalid && visitForm.get('doctor')?.touched" 
+                                [class.is-valid]="visitForm.get('doctor')?.valid"
+                            >
+                        </div>
+                        <div class="mb-2">
+                            <label for="patientId" class="form-label">Páciens</label>
+                            <select class="form-select" name="patientId" formControlName="patientId" id="patientId" 
+                                [class.is-invalid]="visitForm.get('patientId')?.invalid && visitForm.get('patientId')?.touched" 
+                                [class.is-valid]="visitForm.get('patientId')?.valid"
+                            >
+                                @for(patient of patients; track patient.id) {
+                                    <option value="{{patient.id}}">{{patient.name}}</option>
+                                }
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="cancel()">Bezárás</button>
+                    <button type="submit" class="btn btn-primary" form="visitForm" [disabled]="visitForm.invalid || isSaving">
+                        @if(isSaving) {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        }
+                        Mentés
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}

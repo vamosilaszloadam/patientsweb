@@ -1,0 +1,129 @@
+<!--
+* File: patient.component.html
+* Author: Vámosi László Ádám
+* Copyright: 2025, Vámosi László Ádám
+* Group: Szoft II-N
+* Date: 2025-12-05
+* GitHub: https://github.com/vamosilaszloadam/
+* Licenc: MIT
+-->
+
+<h1>Páciensek</h1>
+
+@if(isGetPatientsSuccessful) {
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-success mb-2 d-block mx-auto" (click)="setShowModal()">
+        <i class="bi bi-person-plus"></i>
+        Hozzáadás
+    </button>
+
+    @if(patients.length > 0) {
+        <table class="table table-info table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Név</th>
+                    <th>Születési dátum</th>
+                    <th>TAJ-szám</th>
+                    <th>Telefonszám</th>
+                    <th>Létrehozva</th>
+                    <th>Módosítva</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(patient of patients; track patient.id) {
+                    <tr class="align-middle">
+                        <td data-column="Id:">{{patient.id}}</td>
+                        <td data-column="Név:">{{patient.name}}</td>
+                        <td data-column="Születési dátum:">{{patient.birthDate}}</td>
+                        <td data-column="TAJ-szám:">{{patient.socialNumber}}</td>
+                        <td data-column="Telefonszám:">{{patient.phone}}</td>
+                        <td data-column="Létrehozva:">{{patient.createdAt}}</td>
+                        <td data-column="Módosítva:">{{patient.updatedAt}}</td>
+                        <td class="text-center">
+                            <button class="btn btn-warning" (click)="editPatient(patient)">
+                                <i class="bi bi-pencil"></i>
+                                Módosítás
+                            </button>
+                            <button class="btn btn-danger ms-2" (click)="startDeletePatient(patient.id)">
+                                <i class="bi bi-trash"></i>
+                                Törlés
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }@else {
+        <div class="alert alert-info text-center" role="alert">Jelenleg nincs rögzített páciens.</div>
+    }
+}
+
+@if(showModal) {
+    <!-- Modal -->
+    <div class="modal fade show" id="operationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: block;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                        @if(addMode) {
+                            Páciens hozzáadása
+                        }@else {
+                            Páciens módosítása
+                        }
+                    </h1>
+                    <button type="button" class="btn-close" (click)="cancel()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="patientForm" (ngSubmit)="savePatient()" id="patientForm">
+                        @if(!addMode) {
+                            <div class="mb-2">
+                                <label for="id" class="form-label">Id</label>
+                                <input type="text" id="id" formControlName="id" class="form-control is-valid" readonly>
+                            </div>
+                        }
+                        <div class="mb-2">
+                            <label for="name" class="form-label">Név</label>
+                            <input type="text" id="name" formControlName="name" class="form-control" maxlength="50" 
+                                [class.is-invalid]="patientForm.get('name')?.invalid && patientForm.get('name')?.touched" 
+                                [class.is-valid]="patientForm.get('name')?.valid"
+                            >
+                        </div>
+                        <div class="mb-2">
+                            <label for="birthDate" class="form-label">Születési dátum</label>
+                            <input type="date" id="birthDate" formControlName="birthDate" class="form-control" 
+                                [class.is-invalid]="patientForm.get('birthDate')?.invalid && patientForm.get('birthDate')?.touched" 
+                                [class.is-valid]="patientForm.get('birthDate')?.valid"
+                            >
+                        </div>
+                        <div class="mb-2">
+                            <label for="socialNumber" class="form-label">TAJ-szám</label>
+                            <input type="text" id="socialNumber" formControlName="socialNumber" class="form-control" maxlength="9" 
+                                [class.is-invalid]="patientForm.get('socialNumber')?.invalid && patientForm.get('socialNumber')?.touched" 
+                                [class.is-valid]="patientForm.get('socialNumber')?.valid"
+                            >
+                        </div>
+                        <div class="mb-2">
+                            <label for="phone" class="form-label">Telefonszám</label>
+                            <input type="text" id="phone" formControlName="phone" class="form-control" maxlength="15" placeholder="+36(30)123-4567" 
+                                [class.is-invalid]="patientForm.get('phone')?.invalid && patientForm.get('phone')?.touched" 
+                                [class.is-valid]="patientForm.get('phone')?.valid"
+                            >
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="cancel()">Bezárás</button>
+                    <button type="submit" class="btn btn-primary" form="patientForm" [disabled]="patientForm.invalid || isSaving">
+                        @if(isSaving) {
+                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        }
+                        Mentés
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
